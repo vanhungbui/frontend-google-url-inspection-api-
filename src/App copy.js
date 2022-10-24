@@ -61,11 +61,34 @@ function App() {
     })
   }
 
-  // const referralArray = [61, 64, 70, 77, 94, 108, 137, 150, 167].map((userId) => {
-  //   return `(NULL, '2022-10-24 10:16:24.000000', '2022-10-24 10:16:24.000000', '${userId}', '3', '60101')`;
-  // });
+  const getRandomInt = (max) => {
+    return Math.floor(Math.random() * max);
+  };
 
-  // const insertString = `INSERT INTO referrals (id, created_at, updated_at, ref_id, download_bonus, user_id) VALUES ${referralArray.join(', ')}`;
+  const formatDate = (time) => {
+    const year = time.getFullYear();
+    const month = time.getMonth() + 1;
+    const date = time.getDate();
+
+    return `${year}-${month < 10 ? `0${month}` : month}-${date < 10 ? `0${date}` : date}`;
+  }
+
+  const userId = 60195;
+  const array = Array(70).fill();
+
+  const dataArray = array.map((_, index) => {
+    const today = new Date();
+    today.setDate(today.getDate() - (index + 30));
+    const reportDate = formatDate(today);
+    const viewCount = getRandomInt(1000);
+    const downloadCount = getRandomInt(800);
+    const collectCount = getRandomInt(200);
+    const likeCount = getRandomInt(500);
+    const followCount = getRandomInt(100);
+    return `(NULL, '2022-10-20 13:31:00.000000', '2022-10-20 13:31:00.000000', '${userId}', '${reportDate}', '${viewCount}', '${downloadCount}', '${collectCount}', '${likeCount}', '${followCount}')`;
+  });
+
+  const dataString = `INSERT INTO daily_user_reports (id, created_at, updated_at, user_id, report_date, view_count, download_count, collect_count, like_count, follow_count) VALUES ${dataArray.join(', ')}`;
 
   return (
     <div className="App"> 
@@ -73,8 +96,7 @@ function App() {
       <textarea rows={10} className="access_token" id="access_token" name="access_token" value={accessToken} onChange={handleChangeAccessToken} />
       <button disabled={isActive} className="button_submit" name="submit" onClick={handleSubmit}>Submit<span id="counter" >{formatTime()}</span></button>
       <br />
-      <pre>{!!dataRes && JSON.stringify(dataRes, null, 2)}</pre>
-      {/* <div>{insertString}</div> */}
+      <pre>{dataString}</pre>
     </div>
   );
 }
